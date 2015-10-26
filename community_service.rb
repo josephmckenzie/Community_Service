@@ -13,8 +13,11 @@ def import_file_info
 			else
 				hours = hours_remaining(row)
 				days = days_left(row, Date.today)
-				risk = risk_factor(hours, days)
+				risk = risk_factor(hours, days,row)
 				row[7] = risk
+				 row[6] = "" if row[6]=="1.1.70"
+				days = "Data Missing" if days <-10000 
+				hours = "Data Missing" if row[4]== nil or row[5]== nil 
 				new = (row.push(hours, days)).join(",")
 				newfile.print "#{new}\n"
 			end
@@ -60,14 +63,21 @@ end
 
 
 
-def risk_factor(hours, days)
+def risk_factor(hours, days,row)
 	#input two variables, output is a single variables
-		
-		if days == 0
-			days = -1
+		 days = -1 if days == 0
+		risk = hours/days.to_f
+		if row[4] == nil or row[5] == nil or row[6] == "1.1.70"
+			risk_factor = "Data missing"
+		elsif risk == 0 
+			risk_factor = "Hours Completed"
+		elsif risk <0
+			risk_factor = "High Risk"
+		else
+		risk = (hours / days).round(2)
 		
 		end
-	risk = (hours / days).round(2)
+	
 		
 end
 
